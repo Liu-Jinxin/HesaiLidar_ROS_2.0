@@ -30,6 +30,7 @@
 
 #pragma once
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp/qos.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 #include <std_msgs/msg/u_int8_multi_array.hpp>
 #include <sensor_msgs/msg/imu.hpp>
@@ -126,10 +127,12 @@ inline void SourceDriver::Init(const YAML::Node& config)
 
   node_ptr_.reset(new rclcpp::Node("hesai_ros_driver_node"));
   if (driver_param.input_param.send_point_cloud_ros) {
-    pub_ = node_ptr_->create_publisher<sensor_msgs::msg::PointCloud2>(driver_param.input_param.ros_send_point_topic, 10);
+    pub_ = node_ptr_->create_publisher<sensor_msgs::msg::PointCloud2>(
+        driver_param.input_param.ros_send_point_topic, rclcpp::SensorDataQoS());
   }
   if (driver_param.input_param.send_imu_ros) {
-    imu_pub_ = node_ptr_->create_publisher<sensor_msgs::msg::Imu>(driver_param.input_param.ros_send_imu_topic, 10);
+    imu_pub_ = node_ptr_->create_publisher<sensor_msgs::msg::Imu>(
+        driver_param.input_param.ros_send_imu_topic, rclcpp::SensorDataQoS());
   }
 
   if (driver_param.input_param.ros_send_packet_loss_topic != NULL_TOPIC) {
